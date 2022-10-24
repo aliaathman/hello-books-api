@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
 hello_world_bp = Blueprint("hello_world", __name__)
 
 @hello_world_bp.route("/hello-world", methods=["GET"])
@@ -22,4 +22,26 @@ def broken_endpoint():
     new_hobby = "Surfing"
     response_body["hobbies"].append(new_hobby)
     return response_body
+
+class Book:
+    def __init__(self,id,title,description):
+        self.id = id
+        self.title = title
+        self.description = description
+books = [
+    Book(1, "Harry Potter and Sorcerer's Stone", "A fantasy novel set in a imaginary world"),
+    Book(2, "Misery", "A horror novel about a writer and a die-hard fan"),
+    Book(3, "Book Lovers", "A romance novel about a book editor and a book agent")
+    ]
+books_bp = Blueprint("books", __name__, url_prefix="/books")
+@books_bp.route("", methods= ["GET"])
+def handle_books():
+    books_response = []
+    for book in books:
+        books_response.append(dict(
+            id = book.id,
+            title = book.title,
+            description = book.description
+        ))
+    return jsonify(books_response)
 
